@@ -19,6 +19,11 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @GetMapping("/")
+    public String homePage() {
+        return "index";
+    }
+
     @GetMapping("/login")
     public String loginPage() {
         return "login";

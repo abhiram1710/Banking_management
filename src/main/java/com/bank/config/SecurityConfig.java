@@ -28,7 +28,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // Public pages
-                .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers("/", "/login", "/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/register").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
 
