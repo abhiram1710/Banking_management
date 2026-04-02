@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bank.entity.Account;
-import com.bank.repository.AccountRepository;
+import com.bank.repository.AccountRepository;   // ✅ FIXED IMPORT
 
 @Service
 public class AccountService {
@@ -36,7 +36,8 @@ public class AccountService {
         Account existingAccount = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found for update"));
 
-        existingAccount.setAccountHolderName(updatedAccount.getAccountHolderName());
+        // ✅ FIXED: using correct field name
+        existingAccount.setName(updatedAccount.getName());
         existingAccount.setBalance(updatedAccount.getBalance());
 
         return repository.save(existingAccount);
