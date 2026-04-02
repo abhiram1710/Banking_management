@@ -1,13 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MyBank Login</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.link {
+  margin-top: 15px;
+  display: block;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>MyBank Login</h2>
+
+<input id="username" type="text" placeholder="Enter username">
+<input id="password" type="password" placeholder="Enter password">
+
+<button onclick="loginUser()">Login Now</button>
+
+<a class="link" href="register.html">Don't have an account? Register</a>
+
+</div>
+
 <script>
 
+// ✅ Render backend URL
 const BASE_URL = "https://banking-management-stlh.onrender.com";
 
 function loginUser() {
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  fetch(`${BASE_URL}/api/login`, {   // ✅ FIXED HERE
+  if(username === "" || password === "") {
+    alert("Please enter username and password");
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -17,14 +98,16 @@ function loginUser() {
       password: password
     })
   })
-  .then(response => response.text())
+  .then(res => res.text())
   .then(result => {
 
-    console.log(result);
+    console.log("Response:", result);
 
     if(result === "Login Success") {
+
       localStorage.setItem("username", username);
       window.location.href = "dashboard.html";
+
     } else {
       alert("Invalid Credentials");
     }
@@ -32,8 +115,11 @@ function loginUser() {
   })
   .catch(error => {
     console.error(error);
-    alert("Backend not reachable");
+    alert("⚠️ Server starting... wait 20 seconds and try again");
   });
 }
 
 </script>
+
+</body>
+</html>
