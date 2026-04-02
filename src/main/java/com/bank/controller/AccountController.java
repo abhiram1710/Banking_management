@@ -1,68 +1,50 @@
 package com.bank.controller;
 
-import java.util.List;
-import java.util.Map;
-
+import com.bank.entity.Account;
+import com.bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.bank.entity.Account;
-import com.bank.service.AccountService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
+@CrossOrigin
 public class AccountController {
 
     @Autowired
-    private AccountService service;
+    private AccountService accountService;
 
     // CREATE ACCOUNT
-    @PostMapping
-    public Account createAccount(@RequestBody Account account) {
-        return service.createAccount(account);
+    @PostMapping("/create")
+    public Account create(@RequestBody Account account) {
+        return accountService.createAccount(account);
     }
 
     // GET ALL ACCOUNTS
     @GetMapping
-    public List<Account> getAllAccounts() {
-        return service.getAllAccounts();
+    public List<Account> getAll() {
+        return accountService.getAllAccounts();
     }
 
-    // GET ACCOUNT BY ID
-    @GetMapping("/{id}")
-    public Account getAccountById(@PathVariable Long id) {
-        return service.getAccountById(id);
+    // DEPOSIT
+    @PutMapping("/deposit/{id}")
+    public Account deposit(@PathVariable("id") Long id,
+                           @RequestParam double amount) {
+        return accountService.deposit(id, amount);
     }
 
-    // UPDATE ACCOUNT
-    @PutMapping("/{id}")
-    public Account updateAccount(@PathVariable Long id,
-                                 @RequestBody Account updatedAccount) {
-        return service.updateAccount(id, updatedAccount);
+    // WITHDRAW
+    @PutMapping("/withdraw/{id}")
+    public Account withdraw(@PathVariable("id") Long id,
+                            @RequestParam double amount) {
+        return accountService.withdraw(id, amount);
     }
 
     // DELETE ACCOUNT
-    @DeleteMapping("/{id}")
-    public String deleteAccount(@PathVariable Long id) {
-        service.deleteAccount(id);
-        return "Account deleted successfully";
-    }
-
-    // DEPOSIT MONEY
-    @PostMapping("/{id}/deposit")
-    public Account deposit(@PathVariable Long id,
-                           @RequestBody Map<String, Double> body) {
-
-        Double amount = body.get("amount");
-        return service.deposit(id, amount);
-    }
-
-    // WITHDRAW MONEY
-    @PostMapping("/{id}/withdraw")
-    public Account withdraw(@PathVariable Long id,
-                            @RequestBody Map<String, Double> body) {
-
-        Double amount = body.get("amount");
-        return service.withdraw(id, amount);
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id) {
+        accountService.deleteAccount(id);
+        return "Deleted Successfully";
     }
 }

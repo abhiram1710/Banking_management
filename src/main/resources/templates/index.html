@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
-  <title>Abhiram Banking App</title>
+  <title>MyBank</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: white;
+      margin-top: 100px;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: white;
+      color: black;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+  </style>
+
 </head>
 <body>
-  <h1>Welcome Abhiram 🚀</h1>
-  <a th:href="@{/login}">Login</a>
+
+<h1>Welcome to MyBank 🚀</h1>
+
+<!-- ✅ Correct link -->
+<a href="login.html">Login</a>
+
 </body>
 </html>

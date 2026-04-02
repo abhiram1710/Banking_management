@@ -9,13 +9,13 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String accountHolderName;
+    private String name;
     private double balance;
 
     public Account() {}
 
-    public Account(String accountHolderName, double balance) {
-        this.accountHolderName = accountHolderName;
+    public Account(String name, double balance) {
+        this.name = name;
         this.balance = balance;
     }
 
@@ -23,12 +23,12 @@ public class Account {
         return id;
     }
 
-    public String getAccountHolderName() {
-        return accountHolderName;
+    public String getName() {
+        return name;
     }
 
-    public void setAccountHolderName(String accountHolderName) {
-        this.accountHolderName = accountHolderName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getBalance() {

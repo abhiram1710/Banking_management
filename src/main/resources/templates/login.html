@@ -1,170 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
-    <title>Bank Login</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<title>MyBank Login</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 400px;
-        }
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
 
-        .header h1 {
-            font-size: 32px;
-            color: #333;
-            margin-bottom: 5px;
-        }
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+</style>
 
-        .header .subtitle {
-            color: #999;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: #bbb;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            color: #ccc;
-        }
-
-        .register-link {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .register-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .register-link a:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-
-        .icon {
-            text-align: center;
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-
-        .error {
-            background: #fee;
-            color: #c33;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 13px;
-        }
-    </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="icon">🏦</div>
-            <h1>MyBank</h1>
-            <p class="subtitle">Secure Banking System</p>
-        </div>
 
-        <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username" placeholder="Enter your username" required>
-            </div>
+<div class="container">
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" placeholder="Enter your password" required>
-            </div>
+<h2>MyBank Login</h2>
 
-            <button type="submit" class="login-btn">Login Now</button>
-        </form>
+<!-- ❌ NO form tag (important) -->
+<input id="username" type="text" placeholder="Enter username">
+<input id="password" type="password" placeholder="Enter password">
 
-        <div class="divider">or</div>
+<!-- ✅ type="button" VERY IMPORTANT -->
+<button type="button" onclick="loginUser()">Login Now</button>
 
-        <div class="register-link">
-            Don't have an account? <a href="/register">Register here</a>
-        </div>
-    </div>
+</div>
+
+<script>
+
+// ✅ YOUR BACKEND URL
+const BASE_URL = "https://banking-management-56wi.onrender.com";
+
+function loginUser() {
+
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  fetch(`${BASE_URL}/api/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password
+    })
+  })
+  .then(response => response.text())
+  .then(result => {
+
+    console.log("Response:", result);
+
+    if(result === "Login Success") {
+      localStorage.setItem("username", username);
+
+      // ✅ redirect to frontend dashboard
+      window.location.href = "dashboard.html";
+    } else {
+      alert("Invalid Credentials");
+    }
+
+  })
+  .catch(error => {
+    console.error(error);
+    alert("Backend not reachable");
+  });
+}
+
+</script>
+
 </body>
 </html>

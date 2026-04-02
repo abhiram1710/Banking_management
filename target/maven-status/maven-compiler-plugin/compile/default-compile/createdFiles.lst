@@ -5,6 +5,6 @@ com\bank\config\SecurityConfig.class
 com\bank\repository\AccountRepository.class
 com\bank\entity\AppUser.class
 com\bank\controller\AccountController.class
-com\bank\service\CustomUserDetailsService.class
-com\bank\service\AccountService.class
+com\bank\config\PasswordConfig.class
+com\bank\controller\AuthApiController.class
 com\bank\entity\Account.class

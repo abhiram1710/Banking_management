@@ -10,9 +10,7 @@ public class AppUser {
     private Long id;
 
     private String username;
-
     private String password;
-
     private String role;
 
     public AppUser() {}
@@ -23,19 +21,13 @@ public class AppUser {
         this.role = role;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // ✅ GETTERS
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public String getRole() { return role; }   // 🔥 ADD THIS
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getRole() {
-        return role;
-    }
+    // ✅ SETTERS
+    public void setUsername(String username) { this.username = username; }
+    public void setPassword(String password) { this.password = password; }
+    public void setRole(String role) { this.role = role; }
 }

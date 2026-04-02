@@ -3,14 +3,15 @@ package com.bank.controller;
 import com.bank.entity.AppUser;
 import com.bank.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired
@@ -19,49 +20,32 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping("/")
-    public String homePage() {
-        return "index";
-    }
-
-    @GetMapping("/login")
-    public String loginPage() {
-        return "login";
-    }
-
-    // 🔥 ROLE BASED DASHBOARD
-    @GetMapping("/dashboard")
-    public String dashboard(Authentication authentication) {
-
-        String role = authentication.getAuthorities()
-                                    .iterator()
-                                    .next()
-                                    .getAuthority();
-
-        if (role.equals("ROLE_ADMIN")) {
-            return "admin-dashboard";
-        } else {
-            return "user-dashboard";
-        }
-    }
-
-    @GetMapping("/register")
-    public String registerPage() {
-        return "register";
-    }
-
+    // ✅ REGISTER API
     @PostMapping("/register")
-    public String registerUser(@RequestParam("username") String username,
-                               @RequestParam("password") String password) {
+    public ResponseEntity<?> register(@RequestBody AppUser user) {
 
-        AppUser user = new AppUser(
-                username,
-                passwordEncoder.encode(password),
-                "ROLE_USER"
-        );
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER");
 
         userRepository.save(user);
 
-        return "redirect:/login";
+        return ResponseEntity.ok("User Registered Successfully");
+    }
+
+    // ✅ LOGIN API
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AppUser user) {
+
+        Optional<AppUser> dbUser = userRepository.findByUsername(user.getUsername());
+
+        if (dbUser.isPresent()) {
+            AppUser existingUser = dbUser.get();
+
+            if (passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+                return ResponseEntity.ok("Login Success");
+            }
+        }
+
+        return ResponseEntity.status(401).body("Invalid Username or Password");
     }
 }

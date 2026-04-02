@@ -1,22 +1,161 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Bank Dashboard</title>
+<title>Dashboard</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  margin: 0;
+}
+
+.container {
+  padding: 30px;
+  background: white;
+  margin: 30px;
+  border-radius: 12px;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-btn { background: green; }
+.deposit-btn { background: blue; }
+.withdraw-btn { background: red; }
+.delete-btn { background: black; }
+
+input {
+  padding: 8px;
+  margin: 5px;
+}
+</style>
+
 </head>
 
 <body>
 
-<h2>Welcome to Banking Dashboard</h2>
+<div class="container">
 
-<br>
+<h2 id="welcomeText">Welcome</h2>
 
-<button onclick="location.href='/accounts'">View Accounts</button>
+<button onclick="logout()">Logout</button>
 
-<br><br>
+<h3>Create Account</h3>
 
-<a href="/logout">
-<button>Logout</button>
-</a>
+<input id="name" placeholder="Name">
+<input id="balance" placeholder="Balance">
+<button class="create-btn" onclick="createAccount()">Create</button>
+
+<h3>Accounts</h3>
+
+<button onclick="loadAccounts()">Load Accounts</button>
+
+<table border="1" width="100%">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Balance</th>
+<th>Actions</th>
+</tr>
+<tbody id="accountsTable"></tbody>
+</table>
+
+</div>
+
+<script>
+
+const BASE_URL = "https://banking-management-56wi.onrender.com";
+
+// Show username
+const username = localStorage.getItem("username");
+if (username) {
+  document.getElementById("welcomeText").innerText = "Welcome " + username;
+}
+
+// Create Account
+function createAccount() {
+  fetch(`${BASE_URL}/accounts/create`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      balance: document.getElementById("balance").value
+    })
+  }).then(() => {
+    alert("Account Created");
+    loadAccounts();
+  });
+}
+
+// Load Accounts
+function loadAccounts() {
+  fetch(`${BASE_URL}/accounts`)
+    .then(res => res.json())
+    .then(data => {
+
+      let table = "";
+
+      data.forEach(acc => {
+        table += `
+          <tr>
+            <td>${acc.id}</td>
+            <td>${acc.name || "N/A"}</td>
+            <td>${acc.balance}</td>
+            <td>
+              <button class="deposit-btn" onclick="deposit(${acc.id})">Deposit</button>
+              <button class="withdraw-btn" onclick="withdraw(${acc.id})">Withdraw</button>
+              <button class="delete-btn" onclick="deleteAccount(${acc.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("accountsTable").innerHTML = table;
+    });
+}
+
+// Deposit
+function deposit(id) {
+  let amount = prompt("Enter amount:");
+  fetch(`${BASE_URL}/accounts/deposit/${id}?amount=${amount}`, { method: 'PUT' })
+    .then(() => {
+      alert("Deposited");
+      loadAccounts();
+    });
+}
+
+// Withdraw
+function withdraw(id) {
+  let amount = prompt("Enter amount:");
+  fetch(`${BASE_URL}/accounts/withdraw/${id}?amount=${amount}`, { method: 'PUT' })
+    .then(() => {
+      alert("Withdrawn");
+      loadAccounts();
+    });
+}
+
+// Delete
+function deleteAccount(id) {
+  fetch(`${BASE_URL}/accounts/delete/${id}`, { method: 'DELETE' })
+    .then(() => {
+      alert("Deleted");
+      loadAccounts();
+    });
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem("username");
+  window.location.href = "login.html";
+}
+
+</script>
 
 </body>
 </html>
