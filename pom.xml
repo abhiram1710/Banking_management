@@ -15,7 +15,6 @@
 </parent>
 
 <properties>
- <!-- ✅ FIXED JAVA VERSION -->
  <java.version>17</java.version>
 </properties>
 
@@ -33,10 +32,10 @@
   <artifactId>spring-boot-starter-data-jpa</artifactId>
  </dependency>
 
- <!-- ✅ MYSQL DRIVER -->
+ <!-- ✅ POSTGRESQL DRIVER (FIXED) -->
  <dependency>
-  <groupId>com.mysql</groupId>
-  <artifactId>mysql-connector-j</artifactId>
+  <groupId>org.postgresql</groupId>
+  <artifactId>postgresql</artifactId>
   <scope>runtime</scope>
  </dependency>
 
@@ -46,7 +45,7 @@
   <artifactId>spring-boot-starter-security</artifactId>
  </dependency>
 
- <!-- Thymeleaf (optional now, can keep or remove) -->
+ <!-- Thymeleaf -->
  <dependency>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -64,13 +63,11 @@
 <build>
  <plugins>
 
-  <!-- ✅ Spring Boot Plugin -->
   <plugin>
    <groupId>org.springframework.boot</groupId>
    <artifactId>spring-boot-maven-plugin</artifactId>
   </plugin>
 
-  <!-- ✅ ENSURE JAVA 17 COMPILATION -->
   <plugin>
    <groupId>org.apache.maven.plugins</groupId>
    <artifactId>maven-compiler-plugin</artifactId>
