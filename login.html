@@ -47,26 +47,26 @@ button {
 
 <h2>MyBank Login</h2>
 
-<!-- ❌ NO form tag (important) -->
 <input id="username" type="text" placeholder="Enter username">
 <input id="password" type="password" placeholder="Enter password">
 
-<!-- ✅ type="button" VERY IMPORTANT -->
 <button type="button" onclick="loginUser()">Login Now</button>
 
 </div>
 
 <script>
 
-// ✅ YOUR BACKEND URL
+// ✅ Backend URL
 const BASE_URL = "https://banking-management-56wi.onrender.com";
 
 function loginUser() {
 
+  console.log("Login clicked");
+
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  fetch(`${BASE_URL}/api/auth/login`, {
+  fetch(`${BASE_URL}/api/login`, {   // ✅ FIXED HERE
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -76,7 +76,10 @@ function loginUser() {
       password: password
     })
   })
-  .then(response => response.text())
+  .then(response => {
+    console.log("Status:", response.status);
+    return response.text();
+  })
   .then(result => {
 
     console.log("Response:", result);
@@ -84,7 +87,6 @@ function loginUser() {
     if(result === "Login Success") {
       localStorage.setItem("username", username);
 
-      // ✅ redirect to frontend dashboard
       window.location.href = "dashboard.html";
     } else {
       alert("Invalid Credentials");
@@ -92,7 +94,7 @@ function loginUser() {
 
   })
   .catch(error => {
-    console.error(error);
+    console.error("Error:", error);
     alert("Backend not reachable");
   });
 }
