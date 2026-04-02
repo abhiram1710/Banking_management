@@ -67,7 +67,8 @@ button:hover {
 <input id="username" type="text" placeholder="Enter username">
 <input id="password" type="password" placeholder="Enter password">
 
-<button onclick="loginUser()">Login Now</button>
+<!-- IMPORTANT: type="button" -->
+<button type="button" onclick="loginUser()">Login Now</button>
 
 <a class="link" href="register.html">Don't have an account? Register</a>
 
@@ -75,10 +76,11 @@ button:hover {
 
 <script>
 
-// ✅ Render backend URL
 const BASE_URL = "https://banking-management-stlh.onrender.com";
 
 function loginUser() {
+
+  console.log("Button clicked");
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -104,10 +106,9 @@ function loginUser() {
     console.log("Response:", result);
 
     if(result === "Login Success") {
-
+      alert("Login Success");
       localStorage.setItem("username", username);
       window.location.href = "dashboard.html";
-
     } else {
       alert("Invalid Credentials");
     }
@@ -115,7 +116,7 @@ function loginUser() {
   })
   .catch(error => {
     console.error(error);
-    alert("⚠️ Server starting... wait 20 seconds and try again");
+    alert("Server starting... wait 20 seconds and try again");
   });
 }
 
