@@ -4,31 +4,41 @@
 <title>Register</title>
 </head>
 
-<body>
+<body style="font-family: Arial; text-align:center; margin-top:100px;">
 
 <h2>Register</h2>
 
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
+<input id="username" placeholder="Username"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
 
 <button onclick="registerUser()">Register</button>
 
 <script>
 
-const BASE_URL = "https://YOUR-RENDER-URL.onrender.com";
+const BASE_URL = "https://banking-management-stlh.onrender.com";
 
 function registerUser() {
 
-  fetch(`${BASE_URL}/register`, {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  fetch(`${BASE_URL}/api/register`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
+      "Content-Type": "application/json"
     },
-    body: `username=${document.getElementById("username").value}&password=${document.getElementById("password").value}`
+    body: JSON.stringify({
+      username: username,
+      password: password
+    })
   })
-  .then(() => {
-    alert("Registered Successfully");
+  .then(res => res.text())
+  .then(data => {
+    alert(data);
     window.location.href = "login.html";
+  })
+  .catch(() => {
+    alert("Error registering user");
   });
 
 }
