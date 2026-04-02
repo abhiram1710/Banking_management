@@ -37,6 +37,11 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
+a {
+  text-decoration: none;
+  color: #667eea;
+}
 </style>
 
 </head>
@@ -52,21 +57,23 @@ button {
 
 <button type="button" onclick="loginUser()">Login Now</button>
 
+<p>Don't have an account? 
+  <a href="register.html">Register here</a>
+</p>
+
 </div>
 
 <script>
 
-// ✅ Backend URL
+// 🔥 UPDATE THIS AFTER RENDER DEPLOY
 const BASE_URL = "https://banking-management-56wi.onrender.com";
 
 function loginUser() {
 
-  console.log("Login clicked");
-
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  fetch(`${BASE_URL}/api/login`, {   // ✅ FIXED HERE
+  fetch(`${BASE_URL}/api/login`, {   // ✅ CORRECT API
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -76,17 +83,13 @@ function loginUser() {
       password: password
     })
   })
-  .then(response => {
-    console.log("Status:", response.status);
-    return response.text();
-  })
+  .then(response => response.text())
   .then(result => {
-
-    console.log("Response:", result);
 
     if(result === "Login Success") {
       localStorage.setItem("username", username);
 
+      // ✅ redirect to dashboard
       window.location.href = "dashboard.html";
     } else {
       alert("Invalid Credentials");
@@ -94,7 +97,7 @@ function loginUser() {
 
   })
   .catch(error => {
-    console.error("Error:", error);
+    console.error(error);
     alert("Backend not reachable");
   });
 }

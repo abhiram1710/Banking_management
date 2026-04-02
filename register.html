@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register</title>
+</head>
+
+<body>
+
+<h2>Register</h2>
+
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="registerUser()">Register</button>
+
+<script>
+
+const BASE_URL = "https://YOUR-RENDER-URL.onrender.com";
+
+function registerUser() {
+
+  fetch(`${BASE_URL}/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: `username=${document.getElementById("username").value}&password=${document.getElementById("password").value}`
+  })
+  .then(() => {
+    alert("Registered Successfully");
+    window.location.href = "login.html";
+  });
+
+}
+
+</script>
+
+</body>
+</html>
