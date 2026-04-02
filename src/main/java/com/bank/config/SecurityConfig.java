@@ -14,12 +14,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // ✅ Allow frontend + auth APIs
-                .requestMatchers(
-                        "/api/auth/**",
-                        "/accounts/**"
-                ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()   // 🔥 allow everything
             );
 
         return http.build();
