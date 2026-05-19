@@ -2,6 +2,7 @@ package com.bank.controller;
 
 import com.bank.entity.AppUser;
 import com.bank.repository.AppUserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +51,13 @@ public class AuthApiController {
             return "Username already exists";
         }
 
+        // Encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        // Set default role
+        user.setRole("USER");
+
+        // Save user
         userRepository.save(user);
 
         return "Registration Success";
