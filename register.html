@@ -4,32 +4,50 @@ const BASE_URL = "https://banking-management-stlh.onrender.com";
 
 function registerUser() {
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  fetch(`${BASE_URL}/api/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  })
-  .then(res => res.text())
-  .then(data => {
-
-    alert(data);
-
-    if(data.includes("Success")) {
-      window.location.href = "login.html";
+    if(username === "" || password === "") {
+        alert("Please enter username and password");
+        return;
     }
 
-  })
-  .catch(() => {
-    alert("Error registering user");
-  });
+    fetch(`${BASE_URL}/api/register`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+
+    })
+
+    .then(res => res.text())
+
+    .then(data => {
+
+        console.log(data);
+
+        alert(data);
+
+        if(data.includes("Success")) {
+
+            window.location.href = "/login.html";
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Error registering user");
+    });
 
 }
 
