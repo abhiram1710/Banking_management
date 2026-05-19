@@ -7,68 +7,69 @@
 
 <body style="font-family: Arial; text-align:center; margin-top:100px;">
 
-<h2>Register</h2>
+    <h2>Register</h2>
 
-<input id="username" placeholder="Username"><br><br>
+    <input id="username" type="text" placeholder="Username">
+    <br><br>
 
-<input id="password" type="password" placeholder="Password"><br><br>
+    <input id="password" type="password" placeholder="Password">
+    <br><br>
 
-<button type="button" id="registerBtn">Register</button>
+    <button type="button" id="registerBtn">Register</button>
 
-<script>
+    <script>
 
-alert("JavaScript Loaded");
+        const BASE_URL = "https://banking-management-stlh.onrender.com";
 
-const BASE_URL = "https://banking-management-stlh.onrender.com";
+        document.getElementById("registerBtn").addEventListener("click", async function () {
 
-document.getElementById("registerBtn").addEventListener("click", async function () {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
 
-    alert("Button Clicked");
+            if (username === "" || password === "") {
+                alert("Please enter username and password");
+                return;
+            }
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+            try {
 
-    if(username === "" || password === "") {
-        alert("Please enter username and password");
-        return;
-    }
+                const response = await fetch(`${BASE_URL}/api/register`, {
 
-    try {
+                    method: "POST",
 
-        const response = await fetch(`${BASE_URL}/api/register`, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-            method: "POST",
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                });
 
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+                const data = await response.text();
+
+                console.log(data);
+
+                alert(data);
+
+                if (data.includes("Success")) {
+
+                    window.location.href = "/login.html";
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert("Server Error");
+            }
 
         });
 
-        const data = await response.text();
-
-        alert(data);
-
-        if(data.includes("Success")) {
-
-            window.location.href = "/login.html";
-        }
-
-    } catch(error) {
-
-        console.error(error);
-
-        alert("Fetch Error");
-    }
-
-});
-
-</script>
+    </script>
 
 </body>
+
 </html>
