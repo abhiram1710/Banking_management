@@ -13,13 +13,15 @@
 
 <input id="password" type="password" placeholder="Password"><br><br>
 
-<button type="button" onclick="registerUser()">Register</button>
+<button type="button" id="registerBtn">Register</button>
 
 <script>
 
 const BASE_URL = "https://banking-management-stlh.onrender.com";
 
-function registerUser() {
+document.getElementById("registerBtn").addEventListener("click", function () {
+
+    console.log("Register button clicked");
 
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -44,7 +46,7 @@ function registerUser() {
 
     })
 
-    .then(res => res.text())
+    .then(response => response.text())
 
     .then(data => {
 
@@ -66,7 +68,7 @@ function registerUser() {
         alert("Error registering user");
     });
 
-}
+});
 
 </script>
 
