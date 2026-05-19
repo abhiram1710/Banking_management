@@ -19,18 +19,41 @@ public class AuthApiController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ✅ LOGIN API
+    // LOGIN API
     @PostMapping("/login")
     public String login(@RequestBody AppUser loginUser) {
 
-        Optional<AppUser> user = userRepository.findByUsername(loginUser.getUsername());
+        Optional<AppUser> user =
+                userRepository.findByUsername(loginUser.getUsername());
 
         if (user.isPresent()) {
-            if (passwordEncoder.matches(loginUser.getPassword(), user.get().getPassword())) {
+
+            if (passwordEncoder.matches(
+                    loginUser.getPassword(),
+                    user.get().getPassword())) {
+
                 return "Login Success";
             }
         }
 
         return "Invalid Credentials";
+    }
+
+    // REGISTER API
+    @PostMapping("/register")
+    public String register(@RequestBody AppUser user) {
+
+        Optional<AppUser> existingUser =
+                userRepository.findByUsername(user.getUsername());
+
+        if(existingUser.isPresent()) {
+            return "Username already exists";
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userRepository.save(user);
+
+        return "Registration Success";
     }
 }
