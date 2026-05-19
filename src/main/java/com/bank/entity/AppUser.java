@@ -1,65 +1,58 @@
-package com.bank.controller;
+package com.bank.entity;
 
-import com.bank.entity.AppUser;
-import com.bank.repository.AppUserRepository;
+import jakarta.persistence.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+@Entity
+public class AppUser {
 
-import java.util.Optional;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-@RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*")
-public class AuthApiController {
+    private String username;
+    private String password;
+    private String role;
 
-    @Autowired
-    private AppUserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    // LOGIN API
-    @PostMapping("/login")
-    public String login(@RequestBody AppUser loginUser) {
-
-        Optional<AppUser> user =
-                userRepository.findByUsername(loginUser.getUsername());
-
-        if (user.isPresent()) {
-
-            if (passwordEncoder.matches(
-                    loginUser.getPassword(),
-                    user.get().getPassword())) {
-
-                return "Login Success";
-            }
-        }
-
-        return "Invalid Credentials";
+    public AppUser() {
     }
 
-    // REGISTER API
-    @PostMapping("/register")
-    public String register(@RequestBody AppUser user) {
+    public AppUser(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
-        Optional<AppUser> existingUser =
-                userRepository.findByUsername(user.getUsername());
+    // GETTERS
+    public Long getId() {
+        return id;
+    }
 
-        if(existingUser.isPresent()) {
-            return "Username already exists";
-        }
+    public String getUsername() {
+        return username;
+    }
 
-        // Encode password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public String getPassword() {
+        return password;
+    }
 
-        // Set default role
-        user.setRole("USER");
+    public String getRole() {
+        return role;
+    }
 
-        // Save user
-        userRepository.save(user);
+    // SETTERS
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-        return "Registration Success";
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
