@@ -3,7 +3,7 @@ package com.bank.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "app_user")
+@Table(name = "users")
 public class AppUser {
 
     @Id
@@ -20,14 +20,6 @@ public class AppUser {
     public AppUser() {
     }
 
-    public AppUser(String username, String password, String role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-
-    // GETTERS
-
     public Long getId() {
         return id;
     }
@@ -43,8 +35,6 @@ public class AppUser {
     public String getRole() {
         return role;
     }
-
-    // SETTERS
 
     public void setId(Long id) {
         this.id = id;
