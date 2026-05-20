@@ -21,68 +21,47 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // REGISTER
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody AppUser user) {
+    public ResponseEntity<?> register(@RequestBody AppUser user) {
 
-        try {
+        Optional<AppUser> existing =
+                userRepository.findByUsername(user.getUsername());
 
-            Optional<AppUser> existingUser =
-                    userRepository.findByUsername(user.getUsername());
-
-            if(existingUser.isPresent()) {
-                return ResponseEntity.badRequest()
-                        .body("Username already exists");
-            }
-
-            user.setPassword(
-                    passwordEncoder.encode(user.getPassword())
-            );
-
-            user.setRole("ROLE_USER");
-
-            userRepository.save(user);
-
-            return ResponseEntity.ok("Registration Success");
-
-        } catch(Exception e) {
-
-            e.printStackTrace();
-
-            return ResponseEntity.internalServerError()
-                    .body("Registration Failed");
+        if(existing.isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body("Username already exists");
         }
+
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+
+        user.setRole("ROLE_USER");
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Registration Success");
     }
 
-    // LOGIN
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AppUser user) {
+    public ResponseEntity<?> login(@RequestBody AppUser user) {
 
-        try {
+        Optional<AppUser> dbUser =
+                userRepository.findByUsername(user.getUsername());
 
-            Optional<AppUser> dbUser =
-                    userRepository.findByUsername(user.getUsername());
+        if(dbUser.isPresent()) {
 
-            if(dbUser.isPresent()) {
+            AppUser existingUser = dbUser.get();
 
-                if(passwordEncoder.matches(
-                        user.getPassword(),
-                        dbUser.get().getPassword()
-                )) {
+            if(passwordEncoder.matches(
+                    user.getPassword(),
+                    existingUser.getPassword())) {
 
-                    return ResponseEntity.ok("Login Success");
-                }
+                return ResponseEntity.ok("Login Success");
             }
-
-            return ResponseEntity.status(401)
-                    .body("Invalid Credentials");
-
-        } catch(Exception e) {
-
-            e.printStackTrace();
-
-            return ResponseEntity.internalServerError()
-                    .body("Login Failed");
         }
+
+        return ResponseEntity.badRequest()
+                .body("Invalid Credentials");
     }
 }
