@@ -3,14 +3,18 @@ package com.bank.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "app_user")
 public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
+
     private String password;
+
     private String role;
 
     public AppUser() {
@@ -23,6 +27,7 @@ public class AppUser {
     }
 
     // GETTERS
+
     public Long getId() {
         return id;
     }
@@ -40,6 +45,7 @@ public class AppUser {
     }
 
     // SETTERS
+
     public void setId(Long id) {
         this.id = id;
     }
