@@ -2,78 +2,74 @@
 <html>
 
 <head>
-    <title>Bank Dashboard</title>
+    <title>Dashboard</title>
 
     <style>
 
-        body {
+        body{
             font-family: Arial;
-            padding: 30px;
-            background: linear-gradient(to right, #5f7cff, #8a4bd6);
+            margin:0;
+            padding:40px;
+            background: linear-gradient(to right,#5f72ff,#9b23ea);
         }
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
+        .container{
+            background:white;
+            padding:40px;
+            border-radius:20px;
         }
 
-        input {
-            padding: 10px;
-            margin: 5px;
-            width: 220px;
+        input{
+            padding:10px;
+            width:250px;
+            margin-right:10px;
         }
 
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            color: white;
-            margin: 3px;
+        button{
+            padding:10px 15px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            color:white;
         }
 
-        .createBtn {
-            background: green;
+        .create-btn{
+            background:green;
         }
 
-        .depositBtn {
-            background: blue;
+        .load-btn{
+            background:purple;
         }
 
-        .withdrawBtn {
-            background: orange;
+        .deposit-btn{
+            background:blue;
         }
 
-        .deleteBtn {
-            background: red;
+        .withdraw-btn{
+            background:orange;
         }
 
-        .loadBtn {
-            background: purple;
+        .delete-btn{
+            background:red;
         }
 
-        .logoutBtn {
-            background: gray;
+        .logout-btn{
+            background:gray;
         }
 
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
         }
 
-        table, th, td {
-            border: 1px solid black;
+        table, th, td{
+            border:1px solid black;
         }
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-        }
-
-        h1, h2 {
-            color: black;
+        th, td{
+            padding:10px;
+            text-align:center;
         }
 
     </style>
@@ -86,37 +82,25 @@
 
     <h1 id="welcomeText"></h1>
 
-    <button class="logoutBtn" onclick="logout()">
-        Logout
-    </button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
 
-    <br><br>
+    <br><br><br>
 
     <h2>Create Account</h2>
 
-    <input
-            type="text"
-            id="name"
-            placeholder="Account Holder Name">
+    <input type="text" id="name" placeholder="Enter Name">
 
-    <input
-            type="number"
-            id="balance"
-            placeholder="Initial Balance">
+    <input type="number" id="balance" placeholder="Enter Balance">
 
-    <button
-            class="createBtn"
-            onclick="createAccount()">
+    <button class="create-btn" onclick="createAccount()">
         Create
     </button>
 
-    <br><br>
+    <br><br><br>
 
     <h2>Accounts</h2>
 
-    <button
-            class="loadBtn"
-            onclick="loadAccounts()">
+    <button class="load-btn" onclick="loadAccounts()">
         Load Accounts
     </button>
 
@@ -133,7 +117,9 @@
 
         </thead>
 
-        <tbody id="tableBody"></tbody>
+        <tbody id="accountsTable">
+
+        </tbody>
 
     </table>
 
@@ -141,250 +127,201 @@
 
 <script>
 
-    const BASE_URL =
-        "https://banking-management-stlh.onrender.com";
+const API_URL = "https://banking-management-stlh.onrender.com/api/accounts";
 
-    const username =
-        localStorage.getItem("username");
+const username = localStorage.getItem("username");
 
-    if (!username) {
+document.getElementById("welcomeText").innerText =
+    "Welcome " + username;
 
-        window.location.href = "login.html";
+function logout(){
+
+    localStorage.clear();
+
+    window.location.href = "login.html";
+}
+
+async function createAccount(){
+
+    const name = document.getElementById("name").value;
+
+    const balance = document.getElementById("balance").value;
+
+    if(name === "" || balance === ""){
+
+        alert("Please enter details");
+        return;
     }
 
-    document.getElementById("welcomeText").innerText =
-        "Welcome " + username;
+    try{
 
-    // CREATE ACCOUNT
+        const response = await fetch(API_URL,{
 
-    async function createAccount() {
+            method:"POST",
 
-        const name =
-            document.getElementById("name").value;
+            headers:{
+                "Content-Type":"application/json"
+            },
 
-        const balance =
-            document.getElementById("balance").value;
+            body:JSON.stringify({
+                name:name,
+                balance:balance
+            })
+        });
 
-        if(name === "" || balance === "") {
+        if(response.ok){
 
-            alert("Enter all fields");
-            return;
-        }
+            alert("Account Created");
 
-        try {
-
-            const response = await fetch(
-                `${BASE_URL}/accounts/create`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        name: name,
-                        balance: balance
-                    })
-                }
-            );
-
-            const data = await response.text();
-
-            alert(data);
+            document.getElementById("name").value = "";
+            document.getElementById("balance").value = "";
 
             loadAccounts();
-
-        } catch(error) {
-
-            console.log(error);
-
-            alert("Create Account Failed");
         }
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Error Creating Account");
     }
+}
 
-    // LOAD ACCOUNTS
+async function loadAccounts(){
 
-    async function loadAccounts() {
+    try{
 
-        try {
+        const response = await fetch(API_URL);
 
-            const response =
-                await fetch(`${BASE_URL}/accounts/all`);
+        const accounts = await response.json();
 
-            const accounts =
-                await response.json();
+        const tableBody =
+            document.getElementById("accountsTable");
 
-            const tableBody =
-                document.getElementById("tableBody");
+        tableBody.innerHTML = "";
 
-            tableBody.innerHTML = "";
+        accounts.forEach(account => {
 
-            accounts.forEach(account => {
+            tableBody.innerHTML += `
 
-                const row =
-                    document.createElement("tr");
-
-                row.innerHTML = `
+                <tr>
 
                     <td>${account.id}</td>
 
                     <td>${account.name}</td>
 
-                    <td>₹ ${account.balance}</td>
+                    <td>
+                        ₹${account.balance}
+                    </td>
 
                     <td>
 
                         <button
-                            class="depositBtn"
-                            onclick="depositMoney(${account.id})">
+                            class="deposit-btn"
+                            onclick="deposit(${account.id}, ${account.balance})">
                             Deposit
                         </button>
 
                         <button
-                            class="withdrawBtn"
-                            onclick="withdrawMoney(${account.id})">
+                            class="withdraw-btn"
+                            onclick="withdrawMoney(${account.id}, ${account.balance})">
                             Withdraw
                         </button>
 
                         <button
-                            class="deleteBtn"
+                            class="delete-btn"
                             onclick="deleteAccount(${account.id})">
                             Delete
                         </button>
 
                     </td>
-                `;
 
-                tableBody.appendChild(row);
+                </tr>
+            `;
+        });
 
-            });
+    }catch(error){
 
-        } catch(error) {
+        console.log(error);
 
-            console.log(error);
+        alert("Failed to Load Accounts");
+    }
+}
 
-            alert("Failed to Load Accounts");
-        }
+async function deposit(id,balance){
+
+    let amount =
+        prompt("Enter Deposit Amount");
+
+    if(amount == null) return;
+
+    amount = parseFloat(amount);
+
+    const newBalance =
+        balance + amount;
+
+    updateBalance(id,newBalance);
+}
+
+async function withdrawMoney(id,balance){
+
+    let amount =
+        prompt("Enter Withdraw Amount");
+
+    if(amount == null) return;
+
+    amount = parseFloat(amount);
+
+    if(amount > balance){
+
+        alert("Insufficient Balance");
+        return;
     }
 
-    // DEPOSIT
+    const newBalance =
+        balance - amount;
 
-    async function depositMoney(id) {
+    updateBalance(id,newBalance);
+}
 
-        const amount =
-            prompt("Enter deposit amount");
+async function updateBalance(id,newBalance){
 
-        if(amount == null || amount === "") {
-            return;
-        }
+    const response =
+        await fetch(API_URL);
 
-        try {
+    const accounts =
+        await response.json();
 
-            const response = await fetch(
-                `${BASE_URL}/accounts/deposit/${id}?amount=${amount}`,
-                {
-                    method: "PUT"
-                }
-            );
+    const account =
+        accounts.find(acc => acc.id == id);
 
-            const data =
-                await response.text();
+    await fetch(API_URL,{
 
-            alert(data);
+        method:"POST",
 
-            loadAccounts();
+        headers:{
+            "Content-Type":"application/json"
+        },
 
-        } catch(error) {
-
-            console.log(error);
-
-            alert("Deposit Failed");
-        }
-    }
-
-    // WITHDRAW
-
-    async function withdrawMoney(id) {
-
-        const amount =
-            prompt("Enter withdraw amount");
-
-        if(amount == null || amount === "") {
-            return;
-        }
-
-        try {
-
-            const response = await fetch(
-                `${BASE_URL}/accounts/withdraw/${id}?amount=${amount}`,
-                {
-                    method: "PUT"
-                }
-            );
-
-            const data =
-                await response.text();
-
-            alert(data);
-
-            loadAccounts();
-
-        } catch(error) {
-
-            console.log(error);
-
-            alert("Withdraw Failed");
-        }
-    }
-
-    // DELETE ACCOUNT
-
-    async function deleteAccount(id) {
-
-        const confirmDelete =
-            confirm("Delete this account?");
-
-        if(!confirmDelete) {
-            return;
-        }
-
-        try {
-
-            const response = await fetch(
-                `${BASE_URL}/accounts/${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-            const data =
-                await response.text();
-
-            alert(data);
-
-            loadAccounts();
-
-        } catch(error) {
-
-            console.log(error);
-
-            alert("Delete Failed");
-        }
-    }
-
-    // LOGOUT
-
-    function logout() {
-
-        localStorage.removeItem("username");
-
-        window.location.href = "login.html";
-    }
-
-    // AUTO LOAD ACCOUNTS
+        body:JSON.stringify({
+            id:account.id,
+            name:account.name,
+            balance:newBalance
+        })
+    });
 
     loadAccounts();
+}
+
+async function deleteAccount(id){
+
+    await fetch(`${API_URL}/${id}`,{
+
+        method:"DELETE"
+    });
+
+    loadAccounts();
+}
 
 </script>
 
