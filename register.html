@@ -9,19 +9,19 @@
 
     <h2>Register</h2>
 
-    <input id="username" type="text" placeholder="Username">
+    <input type="text" id="username" placeholder="Username">
     <br><br>
 
-    <input id="password" type="password" placeholder="Password">
+    <input type="password" id="password" placeholder="Password">
     <br><br>
 
-    <button onclick="registerUser()">Register</button>
+    <button id="registerBtn">Register</button>
 
     <script>
 
-        const BASE_URL = "https://banking-management-stlh.onrender.com";
+        document.getElementById("registerBtn").onclick = async function () {
 
-        async function registerUser() {
+            alert("Button clicked");
 
             const username =
                 document.getElementById("username").value;
@@ -29,10 +29,13 @@
             const password =
                 document.getElementById("password").value;
 
+            console.log(username);
+            console.log(password);
+
             try {
 
                 const response = await fetch(
-                    `${BASE_URL}/api/auth/register`,
+                    "https://banking-management-stlh.onrender.com/api/auth/register",
                     {
                         method: "POST",
 
@@ -47,21 +50,27 @@
                     }
                 );
 
+                console.log(response);
+
                 const data = await response.text();
+
+                console.log(data);
 
                 alert(data);
 
-                if(response.ok) {
+                if (response.ok) {
+
                     window.location.href = "login.html";
                 }
 
-            } catch(error) {
+            } catch (error) {
 
                 console.log(error);
 
                 alert("Server Error");
             }
-        }
+
+        };
 
     </script>
 
