@@ -8,8 +8,8 @@
 
         body{
             font-family: Arial;
-            margin:0;
             padding:40px;
+            margin:0;
             background: linear-gradient(to right,#5f72ff,#9b23ea);
         }
 
@@ -29,8 +29,8 @@
             padding:10px 15px;
             border:none;
             border-radius:5px;
-            cursor:pointer;
             color:white;
+            cursor:pointer;
         }
 
         .create-btn{
@@ -59,7 +59,7 @@
 
         table{
             width:100%;
-            border-collapse:collapse;
+            border-collapse: collapse;
             margin-top:20px;
         }
 
@@ -82,17 +82,30 @@
 
     <h1 id="welcomeText"></h1>
 
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button class="logout-btn" onclick="logout()">
+        Logout
+    </button>
 
     <br><br><br>
 
     <h2>Create Account</h2>
 
-    <input type="text" id="name" placeholder="Enter Name">
+    <input
+        type="text"
+        id="name"
+        placeholder="Enter Name"
+    >
 
-    <input type="number" id="balance" placeholder="Enter Balance">
+    <input
+        type="number"
+        id="balance"
+        placeholder="Enter Balance"
+    >
 
-    <button class="create-btn" onclick="createAccount()">
+    <button
+        class="create-btn"
+        onclick="createAccount()"
+    >
         Create
     </button>
 
@@ -100,7 +113,10 @@
 
     <h2>Accounts</h2>
 
-    <button class="load-btn" onclick="loadAccounts()">
+    <button
+        class="load-btn"
+        onclick="loadAccounts()"
+    >
         Load Accounts
     </button>
 
@@ -127,12 +143,11 @@
 
 <script>
 
-const API_URL = "https://banking-management-stlh.onrender.com/api/accounts";
-
-const username = localStorage.getItem("username");
+const API_URL =
+"https://banking-management-stlh.onrender.com/api/accounts";
 
 document.getElementById("welcomeText").innerText =
-    "Welcome " + username;
+"Welcome " + localStorage.getItem("username");
 
 function logout(){
 
@@ -143,19 +158,22 @@ function logout(){
 
 async function createAccount(){
 
-    const name = document.getElementById("name").value;
+    const name =
+    document.getElementById("name").value;
 
-    const balance = document.getElementById("balance").value;
+    const balance =
+    document.getElementById("balance").value;
 
     if(name === "" || balance === ""){
 
-        alert("Please enter details");
+        alert("Enter details");
         return;
     }
 
     try{
 
-        const response = await fetch(API_URL,{
+        const response =
+        await fetch(API_URL,{
 
             method:"POST",
 
@@ -167,14 +185,12 @@ async function createAccount(){
                 name:name,
                 balance:balance
             })
+
         });
 
         if(response.ok){
 
             alert("Account Created");
-
-            document.getElementById("name").value = "";
-            document.getElementById("balance").value = "";
 
             loadAccounts();
         }
@@ -183,7 +199,7 @@ async function createAccount(){
 
         console.log(error);
 
-        alert("Error Creating Account");
+        alert("Create Failed");
     }
 }
 
@@ -191,52 +207,53 @@ async function loadAccounts(){
 
     try{
 
-        const response = await fetch(API_URL);
+        const response =
+        await fetch(API_URL);
 
-        const accounts = await response.json();
+        const data =
+        await response.json();
 
-        const tableBody =
-            document.getElementById("accountsTable");
+        const table =
+        document.getElementById("accountsTable");
 
-        tableBody.innerHTML = "";
+        table.innerHTML = "";
 
-        accounts.forEach(account => {
+        data.forEach(account => {
 
-            tableBody.innerHTML += `
+            table.innerHTML += `
 
-                <tr>
+            <tr>
 
-                    <td>${account.id}</td>
+                <td>${account.id}</td>
 
-                    <td>${account.name}</td>
+                <td>${account.name}</td>
 
-                    <td>
-                        ₹${account.balance}
-                    </td>
+                <td>₹${account.balance}</td>
 
-                    <td>
+                <td>
 
-                        <button
-                            class="deposit-btn"
-                            onclick="deposit(${account.id}, ${account.balance})">
-                            Deposit
-                        </button>
+                    <button
+                    class="deposit-btn"
+                    onclick="deposit(${account.id}, ${account.balance})">
+                    Deposit
+                    </button>
 
-                        <button
-                            class="withdraw-btn"
-                            onclick="withdrawMoney(${account.id}, ${account.balance})">
-                            Withdraw
-                        </button>
+                    <button
+                    class="withdraw-btn"
+                    onclick="withdrawMoney(${account.id}, ${account.balance})">
+                    Withdraw
+                    </button>
 
-                        <button
-                            class="delete-btn"
-                            onclick="deleteAccount(${account.id})">
-                            Delete
-                        </button>
+                    <button
+                    class="delete-btn"
+                    onclick="deleteAccount(${account.id})">
+                    Delete
+                    </button>
 
-                    </td>
+                </td>
 
-                </tr>
+            </tr>
+
             `;
         });
 
@@ -251,14 +268,14 @@ async function loadAccounts(){
 async function deposit(id,balance){
 
     let amount =
-        prompt("Enter Deposit Amount");
+    prompt("Enter Deposit Amount");
 
     if(amount == null) return;
 
     amount = parseFloat(amount);
 
     const newBalance =
-        balance + amount;
+    balance + amount;
 
     updateBalance(id,newBalance);
 }
@@ -266,7 +283,7 @@ async function deposit(id,balance){
 async function withdrawMoney(id,balance){
 
     let amount =
-        prompt("Enter Withdraw Amount");
+    prompt("Enter Withdraw Amount");
 
     if(amount == null) return;
 
@@ -279,7 +296,7 @@ async function withdrawMoney(id,balance){
     }
 
     const newBalance =
-        balance - amount;
+    balance - amount;
 
     updateBalance(id,newBalance);
 }
@@ -287,13 +304,13 @@ async function withdrawMoney(id,balance){
 async function updateBalance(id,newBalance){
 
     const response =
-        await fetch(API_URL);
+    await fetch(API_URL);
 
     const accounts =
-        await response.json();
+    await response.json();
 
     const account =
-        accounts.find(acc => acc.id == id);
+    accounts.find(acc => acc.id == id);
 
     await fetch(API_URL,{
 
@@ -308,6 +325,7 @@ async function updateBalance(id,newBalance){
             name:account.name,
             balance:newBalance
         })
+
     });
 
     loadAccounts();
