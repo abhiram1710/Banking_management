@@ -1,50 +1,47 @@
 package com.bank.controller;
 
 import com.bank.entity.Account;
-import com.bank.service.AccountService;
+import com.bank.repository.AccountRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/accounts")
-@CrossOrigin
+
+@CrossOrigin(
+    origins = {
+        "https://abhiramb34.vercel.app",
+        "http://localhost:5500"
+    }
+)
+
+@RequestMapping("/api/accounts")
 public class AccountController {
 
     @Autowired
-    private AccountService accountService;
+    private AccountRepository accountRepository;
 
-    // CREATE ACCOUNT
-    @PostMapping("/create")
-    public Account create(@RequestBody Account account) {
-        return accountService.createAccount(account);
+    @PostMapping
+    public Account createAccount(
+            @RequestBody Account account) {
+
+        return accountRepository.save(account);
     }
 
-    // GET ALL ACCOUNTS
     @GetMapping
-    public List<Account> getAll() {
-        return accountService.getAllAccounts();
+    public List<Account> getAllAccounts() {
+
+        return accountRepository.findAll();
     }
 
-    // DEPOSIT
-    @PutMapping("/deposit/{id}")
-    public Account deposit(@PathVariable("id") Long id,
-                           @RequestParam double amount) {
-        return accountService.deposit(id, amount);
-    }
+    @DeleteMapping("/{id}")
+    public String deleteAccount(
+            @PathVariable Long id) {
 
-    // WITHDRAW
-    @PutMapping("/withdraw/{id}")
-    public Account withdraw(@PathVariable("id") Long id,
-                            @RequestParam double amount) {
-        return accountService.withdraw(id, amount);
-    }
+        accountRepository.deleteById(id);
 
-    // DELETE ACCOUNT
-    @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        accountService.deleteAccount(id);
-        return "Deleted Successfully";
+        return "Deleted";
     }
 }
